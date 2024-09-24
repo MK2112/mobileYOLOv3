@@ -9,7 +9,7 @@ mobileYOLOv3 is YOLOv3 via a MobileNetV2 backbone for text detection, pruned and
 - [x] Training pipeline (for ICDAR 2015)
 - [ ] Basic Inference
 - [ ] Deflate Jupyter Notebook into file structure
-- [ ] Advanced training pipeline (bigger dataset, batch augmentation, mixed precision, etc.)
+- [ ] Advanced training pipeline (COCO-Text dataset, batch augmentation, mixed precision, etc.)
 - [ ] Advanced Pruning and quantization
 - [ ] Live-Feed Processing
 
