@@ -1,20 +1,22 @@
 # mobileYOLOv3
 
-mobileYOLOv3 is YOLOv3 via a MobileNetV2 backbone for text detection, pruned and quantized for deployment on mobile devices.
+mobileYOLOv3 is YOLOv3 via a MobileNetV3 backbone for text detection, pruned and quantized for deployment on mobile devices.
 
 ## Roadmap
 - [x] Pretrained MobileNetV2 backbone
 - [x] YOLOv3 top end
 - [x] Basic Pruning, Quantization integration
 - [x] Training pipeline (for ICDAR 2015)
+- [x] Switch backbone to MobileNetV3
+- [x] Mixed Precision Training
+- [x] Advanced Pruning and quantization
 - [ ] Basic Inference
+- [ ] Performance Evaluation
 - [ ] Deflate Jupyter Notebook into file structure
-- [ ] Advanced training pipeline (COCO-Text dataset, batch augmentation, mixed precision, etc.)
-- [ ] Advanced Pruning and quantization
-- [ ] Live-Feed Processing
+- [ ] Advanced training pipeline (COCO-Text dataset, batch augmentation, etc.)
+- [ ] Live Image-Feed Inference
 
-MobileNetv2 and YOLOv3 are used as foundation because they are well established, well documented and allow to focus on pipeline optimization.<br>
-If the above steps are completed, the project will be bumped to MobileNetv3 and YOLOv4.
+MobileNetv3 and YOLOv3 are used as foundation because they are well established, well documented and allow to focus on pipeline optimization.
 
 ## References
 1. [Redmon, J., & Farhadi, A. (2018). YOLOv3: An Incremental Improvement.](https://arxiv.org/abs/1804.02767)
