@@ -3,18 +3,6 @@ import torch.nn as nn
 import torchvision.models as models
 from torch.nn import functional as F
 
-class Conv(nn.Module):
-    # Block of Conv2d, BatchNorm and nonlinearity (lReLU)
-    # Co-Exists with DSConv due to enabling richer feature extraction (filters spatial *and* channel dimensions)
-    def __init__(self, in_channels, out_channels, kernel_size=3, stride=1):
-        super(Conv, self).__init__()
-        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size=kernel_size, stride=stride, padding=kernel_size // 2, bias=False)
-        self.bn = nn.BatchNorm2d(out_channels)
-        self.activation = nn.LeakyReLU(0.5)
-
-    def forward(self, x):
-        return self.activation(self.bn(self.conv(x)))
-
 class DSConv(nn.Module):
     # Depthwise Separable Convolution, i.e. Seperate, individually 'easier' convolutions for spatial and channel dimensions
     def __init__(self, in_channels, out_channels, kernel_size=3, stride=1):
@@ -55,34 +43,39 @@ class Resizer(nn.Module):
         return F.softplus(x, beta=0.5)
 
 class MobileYOLOv3(nn.Module):
-    def __init__(self, num_classes=1, num_anchors=3):
+    def __init__(self, num_classes=1, dropout_rate=0.3, anchors=None):
         super(MobileYOLOv3, self).__init__()
         self.num_classes = num_classes
-        self.num_anchors = num_anchors
+        self.anchors = anchors
+        self.dropout_rate = dropout_rate
+        self.num_anchors = len(anchors)
         # Backbone
         self.backbone = nn.Sequential(*list(models.mobilenet_v3_small(weights='IMAGENET1K_V1', pretrained=True).features))
         # Coarse Detection Head
         self.conv_7 = DSConv(576, 1024)
         self.eca_7 = ECA(1024)
-        self.det1 = nn.Conv2d(1024, num_anchors * (5 + num_classes), kernel_size=1)
+        self.dropout_7 = nn.Dropout2d(p=self.dropout_rate)
+        self.det1 = nn.Conv2d(1024, self.num_anchors * (5 + num_classes), kernel_size=1)
         # Medium Detection Head
         self.r_1024_128 = Resizer(1024, 64, (14, 14))
         self.r_48_128 = Resizer(48, 64, (14, 14))
         self.conv_14 = DSConv(128, 512)
         self.eca_14 = ECA(512)
-        self.det2 = nn.Conv2d(512, num_anchors * (5 + num_classes), kernel_size=1)
+        self.dropout_14 = nn.Dropout2d(p=self.dropout_rate)
+        self.det2 = nn.Conv2d(512, self.num_anchors * (5 + num_classes), kernel_size=1)
         # Fine Detection Head
         self.r_512_64 = Resizer(512, 64, (28, 28))
         self.r_24_64 = Resizer(24, 64, (28, 28))
         self.conv_28 = DSConv(128, 512)
         self.eca_28 = ECA(512)
-        self.det3 = nn.Conv2d(512, num_anchors * (5 + num_classes), kernel_size=1)
+        self.dropout_28 = nn.Dropout2d(p=self.dropout_rate)
+        self.det3 = nn.Conv2d(512, self.num_anchors * (5 + num_classes), kernel_size=1)
 
     def _activate(self, det):
         # Reshape to (batch_size, grid_x, grid_y, num_anchors, 5 + num_classes)
         det = det.view(det.shape[0], det.shape[1], det.shape[2], self.num_anchors, 5 + self.num_classes)
         det[..., 0:2] = torch.sigmoid(det[..., 0:2]) # Sigmoid for x, y
-        det[..., 2:4] = torch.sigmoid(det[..., 2:4]) # Sigmoid for w, h
+        det[..., 2:4] = torch.sigmoid(det[..., 2:4]) * self.anchors # Sigmoid for w, h
         det[..., 4] = torch.sigmoid(det[..., 4])   # Objectness
         det[..., 5:] = torch.sigmoid(det[..., 5:]) # Class probabilities
         return det
