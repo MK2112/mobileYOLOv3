@@ -92,18 +92,21 @@ class MobileYOLOv3(nn.Module):
         # Coarse Detection 7x7
         x = self.conv_7(x) # (batch_size, 1024, 7, 7)
         x = self.eca_7(x)  # (batch_size, 1024, 7, 7)
+        x = self.dropout_7(x)
         det1 = self.det1(x).permute(0, 2, 3, 1).contiguous() # (batch_size, 7, 7, num_anchors * (5 + num_classes))
     
         # Medium Detection 14x14
         x = torch.cat([self.r_1024_128(x), self.r_48_128(skip_out_14)], dim=1) # (batch_size, 128, 14, 14)
         x = self.conv_14(x) # (batch_size, 512, 14, 14)
         x = self.eca_14(x)  # (batch_size, 512, 14, 14)
+        x = self.dropout_14(x)
         det2 = self.det2(x).permute(0, 2, 3, 1).contiguous() # (batch_size, 14, 14, num_anchors * (5 + num_classes))
         
         # Fine Detection 28x28
         x = torch.cat([self.r_512_64(x), self.r_24_64(skip_out_28)], dim=1) # (batch_size, 128, 28, 28)
         x = self.conv_28(x) # (batch_size, 512, 28, 28)
         x = self.eca_28(x)  # (batch_size, 512, 28, 28)
+        x = self.dropout_28(x)
         det3 = self.det3(x).permute(0, 2, 3, 1).contiguous() # (batch_size, 28, 28, num_anchors * (5 + num_classes))
         
         return [self._activate(det1), self._activate(det2), self._activate(det3)]
