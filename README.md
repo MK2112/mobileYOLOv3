@@ -13,8 +13,6 @@ mobileYOLOv3: YOLOv3 via a MobileNetV3 backbone for text detection, pruned and q
 - [ ] Advanced training pipeline (COCO-Text dataset, batch augmentation, etc.)
 - [ ] Live Image-Feed Inference
 
-MobileNetv3 and YOLOv3 are used as foundation because they are well established, well documented and allow to focus on pipeline optimization.
-
 ## References
 1. [Redmon, J., & Farhadi, A. (2018). YOLOv3: An Incremental Improvement.](https://arxiv.org/abs/1804.02767)
 2. [Sandler, M., et al. (2018). MobileNetV2: Inverted Residuals and Linear Bottlenecks.](https://arxiv.org/abs/1801.04381)
