@@ -1,6 +1,6 @@
 # mobileYOLOv3
 
-YOLOv3 via a MobileNetV3 backbone for text detection; pruned, quantized, optimized and explained for deployment on mobile devices.
+YOLOv3 via a MobileNetV3 backbone for text detection; pruned, quantized, optimized, and explained for deployment on mobile devices. Primarily intended as a single source for learning about YOLO(v3) in an applied manner.
 
 ## Roadmap
 - [x] Pretrained MobileNetV2 backbone
