@@ -9,8 +9,8 @@ mobileYOLOv3: YOLOv3 via a MobileNetV3 backbone for text detection, pruned and q
 - [x] Training pipeline (for ICDAR 2015)
 - [x] Switch backbone to MobileNetV3
 - [x] Mixed Precision Training
-- [x] Advanced Pruning and quantization
-- [ ] Advanced training pipeline (COCO-Text dataset, batch augmentation, etc.)
+- [x] Pruning and quantization
+- [ ] Extended training pipeline (COCO-Text dataset, batch augmentation, etc.)
 - [ ] Live Image-Feed Inference
 
 ## References
