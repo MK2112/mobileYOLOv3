@@ -52,6 +52,7 @@ class MobileYOLOv3(nn.Module):
         # Backbone
         self.backbone = nn.Sequential(*list(models.mobilenet_v3_small(weights='IMAGENET1K_V1', pretrained=True).features))
         # Coarse Detection Head
+        self.r_576_576 = Resizer(576, 576, (7, 7))
         self.conv_7 = DSConv(576, 1024)
         self.eca_7 = ECA(1024)
         self.dropout_7 = nn.Dropout2d(p=self.dropout_rate)
@@ -90,8 +91,9 @@ class MobileYOLOv3(nn.Module):
                 skip_out_14 = x # (batch_size, 48, 14, 14)
         
         # Coarse Detection 7x7
-        x = self.conv_7(x) # (batch_size, 1024, 7, 7)
-        x = self.eca_7(x)  # (batch_size, 1024, 7, 7)
+        x = self.r_576_576(x) # (batch_size, 576, 7, 7)
+        x = self.conv_7(x)    # (batch_size, 1024, 7, 7)
+        x = self.eca_7(x)     # (batch_size, 1024, 7, 7)
         x = self.dropout_7(x)
         det1 = self.det1(x).permute(0, 2, 3, 1).contiguous() # (batch_size, 7, 7, num_anchors * (5 + num_classes))
     
