@@ -11,8 +11,6 @@ YOLOv3 via a MobileNetV3 backbone for text detection; pruned, quantized, optimiz
 - [x] Mixed Precision Training
 - [x] Pruning and quantization
 - [x] Add textbook-style explanations for YOLOv3
-- [ ] Extended training pipeline (COCO-Text dataset, batch augmentation, etc.)
-- [ ] Live Image-Feed Inference
 
 ## References
 
